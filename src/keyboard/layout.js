@@ -92,6 +92,14 @@ switch (document.cookie) {
     break;
 }
 
+console.log(language);
+// language
+if (language === 'Lithuanian') {
+  numbers.forEach((value, name) => {
+    document.getElementById(name).innerText = value;
+  });
+}
+
 // functions
 
 // delete
