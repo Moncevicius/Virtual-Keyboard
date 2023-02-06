@@ -1,0 +1,65 @@
+.main-container {
+    margin: 0 auto;
+    height: 70vh;
+    width: 90vw;
+}
+
+h1, p {
+    text-align: center;
+}
+
+.text-area-container {
+    height: 30vh;
+}
+
+textarea {
+    height: 90%;
+    width: 99%;
+}
+
+.keyboard-container {
+    height: 30vh;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.keyboard-key {
+    width: 5vh;
+    height: 5vh;
+}
+
+.special-key {
+    width: 11vw;
+}
+
+.space-key {
+    width: 41vw;
+}
+
+button {
+    background-color: cornflowerblue;
+    border: black 2px solid;
+}
+
+button:hover {
+    background-color: cadetblue;
+}
+
+.buttonPressed, button:active {
+    animation: buttonAnimation 5s infinite;
+}
+
+@keyframes buttonAnimation {
+    0% {
+        background-color: cornflowerblue;
+    }
+    50%{
+        background-color: aqua;
+        border-radius: 100%;
+    }
+    100% {
+        background-color: cornflowerblue;
+    }
+}
+
