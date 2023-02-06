@@ -35,7 +35,7 @@ const specialLT = new Map([
 let main = `<div class="main-container">
   <h1>Virtual Keyboard</h1>
   <div class="text-area-container">
-  <textarea name="input" id="input"></textarea>
+  <textarea name="input" id="input" readonly></textarea>
   </div>
   <div class="keyboard-container">
   <div class="keyboard-row">`;
@@ -72,6 +72,7 @@ document.querySelector('body')
 
 const text = window.document.getElementById('input');
 let shift = false;
+let caps = false;
 
 // functions
 
@@ -91,40 +92,54 @@ function backspace() {
 }
 
 function write(key) {
-  switch (key.innerText) {
-    case 'Backspace':
+  if (shift) {
+    if (key.innerText.length < 2 && specialEN.get(key.id) === undefined) {
+      if (caps) {
+        text.value += key.innerText;
+      } else {
+        text.value += key.innerText.toUpperCase();
+      }
+    }
+    if (specialEN.get(key.id) !== undefined) {
+      text.value += specialEN.get(key.id);
+    }
+  }
+  if (!shift) {
+    if (key.innerText === 'Backspace') {
       backspace();
-      break;
-    case 'Tab':
+    } else if (key.innerText === 'Tab') {
       text.value += '  ';
-      break;
-    case 'Enter':
+    } else if (key.innerText === 'Enter') {
       text.value += '\n';
-      break;
-    case 'CapsLock':
-    case 'Shift':
-    case 'Alt':
-    case 'OS':
-    case 'Control':
-      break;
-    case 'Space':
+    } else if (key.innerText === 'CapsLock' || key.innerText === 'Shift' || key.innerText === 'Alt' || key.innerText === 'OS' || key.innerText === 'Control') {
+      // do nothing
+    } else if (key.innerText === 'Space') {
       text.value += ' ';
-      break;
-    default:
+    } else if (caps) {
+      text.value += key.innerText.toUpperCase();
+    } else {
       text.value += key.innerText;
-      break;
+    }
   }
 }
 
 // event listiners
 document.addEventListener('keydown', (ev) => {
   const key = document.getElementById(ev.code);
-  if (key !== null) {
+  if (key !== null && key.innerText !== 'CapsLock') {
     if (key.innerText === 'Shift') {
       shift = true;
     }
     write(key);
     key.classList.add('buttonPressed');
+  }
+  if (key.innerText === 'CapsLock') {
+    if (caps) {
+      caps = false;
+    } else {
+      caps = true;
+      key.classList.add('buttonPressed');
+    }
   }
 });
 
@@ -134,7 +149,12 @@ document.addEventListener('keyup', (ev) => {
     if (key.innerText === 'Shift') {
       shift = false;
     }
-    key.classList.remove('buttonPressed');
+    if (!caps) {
+      key.classList.remove('buttonPressed');
+    }
+    if (key.innerText !== 'CapsLock') {
+      key.classList.remove('buttonPressed');
+    }
   }
 });
 
