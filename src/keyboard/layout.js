@@ -95,7 +95,7 @@ switch (document.cookie) {
 console.log(language);
 // language
 if (language === 'Lithuanian') {
-  numbers.forEach((value, name) => {
+  specialLT.forEach((value, name) => {
     document.getElementById(name).innerText = value;
   });
 }
