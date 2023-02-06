@@ -109,3 +109,17 @@ main += `</div></div><p>Keyboard was created on Windows operating system</p>
         <p>To switch between English / Lithuanian layout press: ctrl + alt</p>`;
 
 document.querySelector('body').insertAdjacentHTML('afterbegin', main);
+
+// event listiners
+
+const text = window.document.getElementById('input');
+document.addEventListener('keydown', (ev) => {
+  const key = document.getElementById(ev.code);
+  text.value += key.innerText;
+  key.classList.add('buttonPressed');
+});
+
+document.addEventListener('keyup', (ev) => {
+  const key = document.getElementById(ev.code);
+  key.classList.remove('buttonPressed');
+});

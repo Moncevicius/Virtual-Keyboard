@@ -47,19 +47,16 @@ button:hover {
 }
 
 .buttonPressed, button:active {
-    animation: buttonAnimation 5s infinite;
+    animation: buttonAnimation 1s infinite;
 }
 
 @keyframes buttonAnimation {
     0% {
-        background-color: cornflowerblue;
-    }
-    50%{
-        background-color: aqua;
-        border-radius: 100%;
+        background-color: gold;
     }
     100% {
-        background-color: cornflowerblue;
+        background-color: aqua;
+        border-radius: 100%;;
     }
 }
 
