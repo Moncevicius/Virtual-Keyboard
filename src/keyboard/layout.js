@@ -1,7 +1,9 @@
-const keyboard = new Map([
+const numbers = new Map([
   ['Backquote', '`'], ['Digit1', '1'], ['Digit2', '2'], ['Digit3', '3'], ['Digit4', '4'],
   ['Digit5', '5'], ['Digit6', '6'], ['Digit7', '7'], ['Digit8', '8'], ['Digit9', '9'],
   ['Digit0', '0'], ['Minus', '-'], ['Equal', '='], ['Backspace', 'Backspace'],
+]);
+const keyboard = new Map([
   [1, 'Row'], ['Tab', 'Tab'], ['KeyQ', 'q'], ['KeyW', 'w'], ['KeyE', 'e'],
   ['KeyR', 'r'], ['KeyT', 't'], ['KeyY', 'y'], ['KeyU', 'u'], ['KeyI', 'i'],
   ['Key0', 'o'], ['KeyP', 'p'], ['BracketLeft', '['], ['BracketRight', ']'],
@@ -15,7 +17,6 @@ const keyboard = new Map([
   ['AltRight', 'Alt'], ['ArrowLeft', '&#8592;'], ['ArrowDown', '&#8595;'],
   ['ArrowRight', '&#8594;'], ['ControlRight', 'Control'],
 ]);
-
 const specialEN = new Map([
   ['Backquote', '¬'], ['Digit1', '!'], ['Digit2', '"'], ['Digit3', '£'], ['Digit4', '$'],
   ['Digit5', '%'], ['Digit6', '^'], ['Digit7', '&'], ['Digit8', '*'], ['Digit9', '('],
@@ -23,7 +24,6 @@ const specialEN = new Map([
   ['Semicolon', ':'], ['Quote', '@'], ['Backslash', '~'], ['Comma', '<'], ['Period', '>'],
   ['Slash', '?'],
 ]);
-
 const specialLT = new Map([
   ['Backquote', '¬'], ['Digit1', 'ą'], ['Digit2', 'č'], ['Digit3', 'ę'], ['Digit4', 'ė'],
   ['Digit5', 'į'], ['Digit6', 'š'], ['Digit7', 'ų'], ['Digit8', 'ū'], ['Digit9', '('],
@@ -31,6 +31,7 @@ const specialLT = new Map([
   ['Semicolon', ':'], ['Quote', '@'], ['Backslash', '~'], ['Comma', '<'], ['Period', '>'],
   ['Slash', '?'],
 ]);
+const fullKeyboard = new Map([...numbers, ...keyboard]);
 
 let main = `<div class="main-container">
   <h1>Virtual Keyboard</h1>
@@ -40,7 +41,7 @@ let main = `<div class="main-container">
   <div class="keyboard-container">
   <div class="keyboard-row">`;
 
-keyboard.forEach((value, key) => {
+fullKeyboard.forEach((value, key) => {
   switch (key) {
     case 1:
     case 2:
@@ -73,6 +74,23 @@ document.querySelector('body')
 const text = window.document.getElementById('input');
 let shift = false;
 let caps = false;
+let control = false;
+let alt = false;
+let language = '';
+
+// set cookie
+console.log(document.cookie);
+switch (document.cookie) {
+  case 'English':
+    language = 'English';
+    break;
+  case 'Lithuanian':
+    language = 'Lithuanian';
+    break;
+  default:
+    language = 'English';
+    break;
+}
 
 // functions
 
@@ -93,6 +111,16 @@ function backspace() {
 
 function write(key) {
   if (shift) {
+    if (language === 'English') {
+      specialEN.forEach((value, name) => {
+        document.getElementById(name).innerText = value;
+      });
+    }
+    if (language === 'Lithuanian') {
+      numbers.forEach((value, name) => {
+        document.getElementById(name).innerText = value;
+      });
+    }
     if (key.innerText.length < 2 && specialEN.get(key.id) === undefined) {
       if (caps) {
         text.value += key.innerText;
@@ -141,11 +169,44 @@ document.addEventListener('keydown', (ev) => {
       key.classList.add('buttonPressed');
     }
   }
+  if (key.innerText === 'Control') {
+    control = true;
+  }
+  if (key.innerText === 'Alt') {
+    alt = true;
+  }
+  if (control && alt) {
+    if (language === 'English') {
+      specialLT.forEach((value, name) => {
+        document.getElementById(name).innerText = value;
+      });
+      language = 'Lithuanian';
+      document.cookie = 'Lithuanian';
+    } else {
+      numbers.forEach((value, name) => {
+        document.getElementById(name).innerText = value;
+      });
+      language = 'English';
+      document.cookie = 'English';
+    }
+  }
 });
 
 document.addEventListener('keyup', (ev) => {
   if (document.getElementById(ev.code) !== null) {
     const key = document.getElementById(ev.code);
+    if (key.innerText === 'Shift') {
+      if (language === 'English') {
+        numbers.forEach((value, name) => {
+          document.getElementById(name).innerText = value;
+        });
+      }
+      if (language === 'Lithuanian') {
+        specialLT.forEach((value, name) => {
+          document.getElementById(name).innerText = value;
+        });
+      }
+    }
     if (key.innerText === 'Shift') {
       shift = false;
     }
@@ -154,6 +215,12 @@ document.addEventListener('keyup', (ev) => {
     }
     if (key.innerText !== 'CapsLock') {
       key.classList.remove('buttonPressed');
+    }
+    if (key.innerText !== 'Control') {
+      control = false;
+    }
+    if (key.innerText !== 'Alt') {
+      alt = false;
     }
   }
 });
